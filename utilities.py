@@ -3,17 +3,34 @@ import glob
 from datetime import datetime
 
 
+# Functions
+def prepend_line(filepath, line_to_prepend):
+    """
+    Prepend lines at the beginning of a file. Concept from https://stackoverflow.com/a/5917395.
+
+    :param filepath: Path of the file.
+    :param line_to_prepend: The line to prepend.
+    :return: Nothing.
+    """
+    with open(filepath, 'r+', encoding='utf-8') as a_file:
+        content = a_file.read()
+        a_file.seek(0, 0)
+        a_file.write(line_to_prepend.rstrip('\r\n') + '\n' + content)
+
+
 def list_files(path, tree_file):
     """
     Lists files in the given path. Concept from: https://stackoverflow.com/a/9728478
-    Additionally, prints a count of audio and video files in the console.
 
     :param path: The root. Tree starts to populate from here.
     :param tree_file: The file where the tree is to be written.
     :return: None
     """
+    # Define variables
     count_audio = 0
     count_video = 0
+
+    # Write tree
     with open(tree_file, 'w', encoding='utf-8') as tf:
         for root, dirs, files in os.walk(path):
             level = root.replace(path, '').count(os.sep)
@@ -40,8 +57,13 @@ def list_files(path, tree_file):
                         or file_path.endswith('.mov') \
                         or file_path.endswith('.avi'):
                     count_video += 1
-    print('Number of audios: ' + count_audio.__str__())
-    print('Number of videos: ' + count_video.__str__())
+
+    # Prepend datetime and count of audio and video files to the file
+    date_time = datetime.now().strftime('%B %d, %Y, %I:%M %p')
+    line = 'Last generation: ' + date_time + '\n'
+    line += 'Number of audios: ' + count_audio.__str__() + '\n'
+    line += 'Number of videos: ' + count_video.__str__() + '\n\n'
+    prepend_line(tree_file, line)
 
 
 def format_files():
