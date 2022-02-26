@@ -1,5 +1,6 @@
 import os
 import glob
+from datetime import datetime
 
 
 def list_files(path, tree_file):
@@ -18,7 +19,12 @@ def list_files(path, tree_file):
             tf.writelines('{}{}/'.format(indent, os.path.basename(root)) + '\n')
             sub_indent = ' ' * 4 * (level + 1)
             for f in files:
-                tf.writelines('{}{}'.format(sub_indent, f) + '\n')
+                file_path = os.path.join(root, f)
+                last_modified_timestamp = os.path.getmtime(file_path)
+                last_modified = datetime.fromtimestamp(
+                    last_modified_timestamp).__str__()
+                tf.writelines('{}{}'.format(sub_indent, f) + ' ' +
+                              last_modified + '\n')
 
 
 def format_files():
