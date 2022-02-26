@@ -1,0 +1,8 @@
+# Jerbrains configuration file
+.idea/
+
+# Python venv
+venv/
+
+# Output directory
+out/
